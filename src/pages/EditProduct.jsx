@@ -45,7 +45,7 @@ function EditProduct() {
     try {
 
       const res = await axios.get(
-        `https://ecomflask.duckdns.org/api/admin/item/${id}`,
+        `http://localhost:5000/admin/item/${id}`,
         {
           withCredentials: true
         }
@@ -105,7 +105,7 @@ function EditProduct() {
       }
 
       const res = await axios.put(
-        `https://ecomflask.duckdns.org/api/admin/update-item/${id}`,
+        `https://ecommerce-flask.duckdns.org/admin/updateitem/${id}`,
         data,
         {
           withCredentials: true

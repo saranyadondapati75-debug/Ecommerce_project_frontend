@@ -1,35 +1,57 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { demoProducts } from "../data/demoProducts";
 
 function AdminProducts() {
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(demoProducts);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [usingDemoProducts, setUsingDemoProducts] = useState(true);
   const navigate = useNavigate();
 
-  async function getProducts() {
-    try {
-
-      const res = await axios.get(
-        "https://ecomflask.duckdns.org/api/admin/items",
-        {
-          withCredentials: true
-        }
-      );
-
-      setProducts(res.data.products || res.data);
-
-    } catch (error) {
-      console.log(error.response?.data || error.message);
-      navigate("/login");
+  const fetchProducts = useCallback(async () => {
+  const res = await axios.get(
+    "https://ecommerce-flask.duckdns.org/admin/allitems",
+    {
+      withCredentials: true,
+      timeout: 8000
     }
+  );
+
+  console.log("API Response:", res.data);
+
+  if (res.data.status !== "success") {
+    throw new Error(res.data.message || "Unable to fetch products");
+  }
+
+  if (!Array.isArray(res.data.products)) {
+    throw new Error("Products data is not an array");
+  }
+
+  return res.data.products;
+}, []);
+  function retryGetProducts() {
+    setErrorMessage("");
+    fetchProducts().then((data) => {
+      setProducts(data);
+      setUsingDemoProducts(false);
+    }).catch((error) => {
+      console.log(error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        navigate("/login");
+      } else {
+        setProducts(demoProducts);
+        setUsingDemoProducts(true);
+      }
+    });
   }
 
   async function deleteProduct(id) {
     try {
 
       const res = await axios.delete(
-        `https://ecomflask.duckdns.org/api/admin/delete-item/${id}`,
+        `https://ecommerce-flask.duckdns.org/admin/deleteitem/${id}`,
         {
           withCredentials: true
         }
@@ -37,7 +59,7 @@ function AdminProducts() {
 
       alert(res.data.message);
 
-      getProducts();
+      fetchProducts().then(setProducts);
 
     } catch (error) {
       console.log(error.response?.data || error.message);
@@ -45,8 +67,29 @@ function AdminProducts() {
   }
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    let active = true;
+    fetchProducts().then((data) => {
+      if (active) {
+        setProducts(data);
+        setErrorMessage("");
+        setUsingDemoProducts(false);
+      }
+    }).catch((error) => {
+      console.log(error.response?.data || error.message);
+      if (active) {
+        if (error.response?.status === 401) {
+          navigate("/login");
+        } else {
+          setProducts(demoProducts);
+          setUsingDemoProducts(true);
+        }
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [fetchProducts, navigate]);
 
   return (
     <>
@@ -155,7 +198,26 @@ function AdminProducts() {
         <div className="container">
           <div className="row g-4">
 
-            {products.map((item) => (
+            {(errorMessage || usingDemoProducts) && (
+              <div className="alert alert-warning text-center" role="alert">
+                {usingDemoProducts
+                  ? "The product server is unavailable. Showing sample products; admin actions are disabled."
+                  : errorMessage}
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={retryGetProducts}
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {!errorMessage && products.length === 0 && (
+              <p className="text-center">No products have been added yet.</p>
+            )}
+
+            {!errorMessage && products.map((item) => (
               
               <div
                 className="col-12 col-sm-6 col-lg-4"
@@ -184,26 +246,30 @@ function AdminProducts() {
 
                     <div className="d-flex gap-2 mt-4 flex-wrap">
 
-                      <Link
-                        to={`/single/${item.itemid}`}
-                        className="btn-custom view-btn"
-                      >
-                        View
-                      </Link>
+                      {!item.isDemo && (
+                        <>
+                          <Link
+                            to={`/single/${item.itemid}`}
+                            className="btn-custom view-btn"
+                          >
+                            View
+                          </Link>
 
-                      <Link
-                        to={`/edit/${item.itemid}`}
-                        className="btn-custom edit-btn"
-                      >
-                        Edit
-                      </Link>
+                          <Link
+                            to={`/edit/${item.itemid}`}
+                            className="btn-custom edit-btn"
+                          >
+                            Edit
+                          </Link>
 
-                      <button
-                        className="btn-custom delete-btn"
-                        onClick={() => deleteProduct(item.itemid)}
-                      >
-                        Delete
-                      </button>
+                          <button
+                            className="btn-custom delete-btn"
+                            onClick={() => deleteProduct(item.itemid)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
 
                     </div>
 

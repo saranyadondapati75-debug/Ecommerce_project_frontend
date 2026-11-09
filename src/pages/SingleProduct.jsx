@@ -12,7 +12,7 @@ function SingleProduct() {
     try {
 
       const res = await axios.get(
-        `https://ecomflask.duckdns.org/api/admin/item/${id}`,
+        `https://ecommerce-flask.duckdns.org/admin/item/${id}`,
         {
           withCredentials: true
         }

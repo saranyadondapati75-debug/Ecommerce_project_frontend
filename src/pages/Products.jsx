@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "../store/Slices/ProductSlice";
 
@@ -15,27 +15,54 @@ function Products() {
   // FILTER PRODUCTS
   const filteredProducts = useMemo(() => {
 
-    return items.filter((s) =>
-      s.category.toLowerCase().includes(
-        search.toLowerCase()
-      )
+    return items.filter((product) =>
+      (product.category || "").toLowerCase().includes(search.toLowerCase())
     );
 
   }, [items, search]);
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
-
-  if (error) {
-    return <h2>{error}</h2>;
-  }
+  }, [dispatch]);
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <h2>Loading...</h2>
-      </div>
+      <>
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+        />
+        <div className="d-flex justify-content-center align-items-center vh-100">
+          <h2>Loading products...</h2>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+        />
+        <main className="container py-5 text-center">
+          <div className="alert alert-warning" role="alert">
+            <h2 className="h4">Products are temporarily unavailable</h2>
+            <p className="mb-0">{error}</p>
+            <p className="mt-2 mb-0">
+              Please try again later. If this keeps happening, the products
+              server may be offline.
+            </p>
+          </div>
+          <button
+            className="btn btn-primary mt-3"
+            onClick={() => dispatch(fetchProducts())}
+          >
+            Retry
+          </button>
+        </main>
+      </>
     );
   }
 
@@ -156,6 +183,10 @@ function Products() {
 
         <div className="container">
           <div className="row g-4">
+
+            {filteredProducts.length === 0 && (
+              <p className="text-center">No products found.</p>
+            )}
 
             {filteredProducts.map((v) => (
 

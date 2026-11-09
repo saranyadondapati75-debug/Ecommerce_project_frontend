@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import Login from './pages/Login'
+import NewPassword from "./pages/NewPassword";
 import Register from './pages/Register'
 import VerifyOtp from './pages/VerifyOtp'
 import Navbar from './pages/Navbar'
@@ -21,6 +22,7 @@ import UserProduce from './pages/User/UserProduce'
 import Payment from './pages/User/Payment'
 import MyOrders from "./pages/User/MyOrders";
 import OrderDetails from "./pages/User/OrderDetails";
+
 
 
 function App() {
@@ -64,7 +66,10 @@ function App() {
           path="/login"
           element={<Login />}
         />
-
+        <Route 
+         path="/new-password"
+         element={<NewPassword />}
+       />
         <Route
           path="/register"
           element={<Register />}

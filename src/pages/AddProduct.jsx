@@ -72,7 +72,7 @@ function AddProduct() {
       data.append("file", file);
 
       const res = await axios.post(
-        "https://ecomflask.duckdns.org/api/admin/add-item",
+        "https://ecommerce-flask.duckdns.org/admin/additem",
         data,
         {
           withCredentials: true,

@@ -29,8 +29,8 @@ function Register() {
   });
   const url =
     role === "admin"
-      ? "https://ecomflask.duckdns.org/api/admin/register"
-      : "https://ecomflask.duckdns.org/api/user/register";
+      ? "https://ecommerce-flask.duckdns.org/admin/register"
+      : "https://ecommerce-flask.duckdns.org/user/register";
 
   const payload =
     role === "admin"
@@ -83,8 +83,8 @@ function Register() {
   try {
     const url =
       role === "admin"
-        ? "https://ecomflask.duckdns.org/api/admin/register"
-        : "https://ecomflask.duckdns.org/api/user/register";
+        ? "https://ecommerce-flask.duckdns.org/admin/register"
+        : "https://ecommerce-flask.duckdns.org/user/register";
 
     const payload =
       role === "admin"
@@ -113,12 +113,18 @@ function Register() {
       "success"
     );
 
-    navigate("/verify-otp", {
-      state: {
-        token: res.data.token,
-        role: role
-      }
-    });
+    // navigate("/verify-otp", {
+    //   state: {
+    //     token: res.data.token,
+    //     role: role
+    //   }
+    // });
+  navigate("/verify-otp", {
+  state: {
+    email: formData.useremail,
+    role: role
+  }
+});
 
   } catch (error) {
     console.log(error.response?.data || error.message);

@@ -27,8 +27,10 @@ useEffect(() => {
 
     if (user) {
       await fetch(
-        "https://ecomflask.duckdns.org/api/user/logout",
+        "https://ecommerce-flask.duckdns.org/admin/logout",
         {
+          method:"POST",
+
           credentials: "include"
         }
       );
@@ -174,6 +176,50 @@ useEffect(() => {
           </Link>
         </li>
 
+        {/* CATEGORIES DROPDOWN */}
+        <li className="nav-item dropdown">
+          <span
+            className="nav-link dropdown-toggle custom-link"
+            role="button"
+            data-bs-toggle="dropdown"
+            style={{ cursor: "pointer" }}
+          >
+            Categories
+          </span>
+          <ul className="dropdown-menu dropdown-menu-dark-custom">
+            <li>
+              <Link className="dropdown-item" to="/produce?category=home_appliences">
+                🏠 Home Appliances
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/produce?category=Grocery">
+                🛒 Grocery
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/produce?category=Fashion">
+                👗 Fashion
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/produce?category=Electronics">
+                📱 Electronics
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/produce?category=Sports">
+                ⚽ Sports
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/produce?category=Toys">
+                🧸 Toys
+              </Link>
+            </li>
+          </ul>
+        </li>
+
         <li className="nav-item">
           <Link
             className="nav-link custom-link"
@@ -182,15 +228,8 @@ useEffect(() => {
             Cart
           </Link>
         </li>
- <li className="nav-item">
-          <Link
-            className="nav-link custom-link"
-            to="/payment"
-          >
-            Payment
-          </Link>
-        </li>
-         <li className="nav-item">
+
+        <li className="nav-item">
           <Link
             className="nav-link custom-link"
             to="/my-orders"
@@ -198,6 +237,7 @@ useEffect(() => {
             Orders
           </Link>
         </li>
+
         <li className="nav-item">
           <button
             className="logout-btn"

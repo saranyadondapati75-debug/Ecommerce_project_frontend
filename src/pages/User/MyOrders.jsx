@@ -15,7 +15,7 @@ function MyOrders() {
     async function fetchOrders() {
         try {
             const res = await axios.get(
-                "https://ecomflask.duckdns.org/api/myorders",
+                "https://ecommerce-flask.duckdns.org/user/orders",
                 {
                     withCredentials: true
                 }
@@ -76,7 +76,7 @@ function MyOrders() {
                                 <div className="col-3">
                                      <a
                                     className="btn btn-success btn-sm"
-                                    href={`https://ecomflask.duckdns.org/api/invoice/${order.orderid}`}
+                                    href={`https://ecommerce-flask.duckdns.org/api/invoice/${order.orderid}`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >
